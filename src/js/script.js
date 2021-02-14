@@ -10,11 +10,14 @@
         },
         bookItem: {
           image: '.book__image',
-        }
+        }        
       }
 
-    
+    const className = {
+        bookCart: 'favorite'
+    }
 
+    const favoriteBooks = [];
 
     function render() {
         const books = dataSource.books;        
@@ -26,10 +29,25 @@
                 bookContainer = document.querySelector(select.containerOf.booksList);
 
             bookContainer.appendChild(generatedDOM);           
+        }        
+    }
+
+    function initActions() {
+        const bookList = document.querySelector(select.containerOf.booksList),
+            bookImages = bookList.querySelectorAll(select.bookItem.image);
+            
+
+        for (let bookImage of bookImages) {            
+            bookImage.addEventListener('dblclick', function(event) {
+                event.preventDefault();
+
+                bookImage.classList.add(className.bookCart);
+                favoriteBooks.push(bookImage.getAttribute('data-id'));                
+            })
         }
-        
     }
 
     render();
+    initActions();
 
 }
