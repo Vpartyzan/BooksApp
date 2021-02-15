@@ -1,68 +1,67 @@
 {
-    'use strict';
+  'use strict';
 
-    const select = {
-        templateOf:{
-          bookCart: '#template-book',
-        },
-        containerOf: {
-          booksList: '.books-list',
-        },
-        bookItem: {
-          image: '.book__image',
-        }        
-      }
+  const select = {
+    templateOf:{
+      bookCart: '#template-book',
+    },
+    containerOf: {
+      booksList: '.books-list',
+    },
+    bookItem: {
+      image: '.book__image',
+    }        
+  };
 
-    const className = {
-        bookCart: 'favorite'
-    }
+  const className = {
+    bookCart: 'favorite'
+  };
 
-    const favoriteBooks = [];
+  const favoriteBooks = [];
 
-    function render() {
-        const books = dataSource.books;        
+  function render() {
+    const books = dataSource.books;        
 
-        for (let book of books) {    
-            const bookTemplate = Handlebars.compile(document.querySelector(select.templateOf.bookCart).innerHTML),
-                generatedHTML = bookTemplate(book),            
-                generatedDOM = utils.createDOMFromHTML(generatedHTML),
-                bookContainer = document.querySelector(select.containerOf.booksList);
+    for (let book of books) {    
+      const bookTemplate = Handlebars.compile(document.querySelector(select.templateOf.bookCart).innerHTML),
+        generatedHTML = bookTemplate(book),            
+        generatedDOM = utils.createDOMFromHTML(generatedHTML),
+        bookContainer = document.querySelector(select.containerOf.booksList);
 
-            bookContainer.appendChild(generatedDOM);           
-        }        
-    }
+      bookContainer.appendChild(generatedDOM);           
+    }        
+  }
 
-    function initActions() {
-        const bookList = document.querySelector(select.containerOf.booksList),
-            bookImages = bookList.querySelectorAll(select.bookItem.image);
-            
+  function initActions() {
+    const bookList = document.querySelector(select.containerOf.booksList);            
 
-        for (let bookImage of bookImages) {            
-            bookImage.addEventListener('dblclick', function(event) {
-                event.preventDefault();
-
-                let id = bookImage.getAttribute('data-id');
                 
-                if (favoriteBooks.length < 1) {
-                    bookImage.classList.add(className.bookCart);
-                    favoriteBooks.push(bookImage.getAttribute('data-id'));
-                } else {                        
-                    if (favoriteBooks.find( el => el == id)) {                            
-                        const index = favoriteBooks.indexOf(id);
+    bookList.addEventListener('dblclick', function(event) {
+      event.preventDefault();
 
-                        favoriteBooks.splice(index, 1);
-                        bookImage.classList.remove(className.bookCart);
-                    } else {
-                        bookImage.classList.add(className.bookCart);
-                        favoriteBooks.push(bookImage.getAttribute('data-id'));
-                    }
-                } 
-                                
-            })
-        }
-    }
+      if (event.target.offsetParent.classList.contains('book__image')) {        
 
-    render();
-    initActions();
+        let id = event.target.offsetParent.getAttribute('data-id');
+                  
+        if (favoriteBooks.length < 1) {
+          event.target.offsetParent.classList.add(className.bookCart);
+          favoriteBooks.push(event.target.offsetParent.getAttribute('data-id'));
+        } else {                        
+          if (favoriteBooks.find( el => el == id)) {                            
+            const index = favoriteBooks.indexOf(id);
+
+            favoriteBooks.splice(index, 1);
+            event.target.offsetParent.classList.remove(className.bookCart);
+          } else {
+            event.target.offsetParent.classList.add(className.bookCart);
+            favoriteBooks.push(event.target.offsetParent.getAttribute('data-id'));
+          }
+        } 
+      }                        
+    });    
+  }
+
+  render();
+  initActions();
 
 }
