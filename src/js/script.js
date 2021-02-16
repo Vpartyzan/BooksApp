@@ -28,6 +28,9 @@
     const books = dataSource.books;        
 
     for (let book of books) {    
+      book.ratingBgc = determineRatingBgc(book.rating);
+      book.ratingWidth = book.rating * 10;
+
       const bookTemplate = Handlebars.compile(document.querySelector(select.templateOf.bookCart).innerHTML),
         generatedHTML = bookTemplate(book),            
         generatedDOM = utils.createDOMFromHTML(generatedHTML),
@@ -39,7 +42,7 @@
 
   function initActions() {
     const bookList = document.querySelector(select.containerOf.booksList);
-    const filterBooks = document.querySelector(select.filters.filter);
+    const filterBook = document.querySelector(select.filters.filter);
 
     bookList.addEventListener('dblclick', function(event) {
       event.preventDefault();
@@ -65,7 +68,7 @@
       }                        
     }); 
     
-    filterBooks.addEventListener('click', function(event) {      
+    filterBook.addEventListener('click', function(event) {      
 
       if (event.target.tagName == 'INPUT' && event.target.type == 'checkbox' && event.target.name == 'filter') {
         const filterName = event.target.value,
@@ -74,7 +77,7 @@
         (event.target.checked) ? filters.push(filterName) : filters.splice(index, 1);       
       }
 
-      window.filterBooks();
+      filterBooks();
     });
 
   }
@@ -96,10 +99,17 @@
 
       (shouldBeHidden) ? bookImage.classList.add(className.hiddenBook) : bookImage.classList.remove(className.hiddenBook);      
     }
+  }
 
+  function determineRatingBgc(rating) {
+    return (rating < 6) ? "linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)"
+              : (rating > 6 && rating <= 8) ? "linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)"
+              : (rating > 8 && rating <= 9) ? "linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)"
+              : "linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)";
   }
 
   render();
   initActions();
-
+  
+  
 }
